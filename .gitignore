@@ -41,6 +41,7 @@
 [Rr]elease/
 [Rr]eleases/
 x64/
+build/
 
 *_i.c
 *_p.c

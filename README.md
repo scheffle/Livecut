@@ -1,3 +1,27 @@
+# Livecut VST3 Version
+
+This is a version of LiveCut adapted for the VST3 SDK. The Juce dependency was removed.
+The original VST plug-in was written by Remy Muller.
+
+## How to build
+
+### You need:
+
+    * cmake
+    * VST SDK 3.7.4
+    * compiler with c++17 support
+
+### Build:
+
+```
+mkdir build
+cd build
+cmake -Dvst3sdk_SOURCE_DIR=$PATH_TO_THE_VST3_SDK ../VST3/
+cmake --build .
+```
+
+# The original info about it:
+
 Livecut
 =======
 
