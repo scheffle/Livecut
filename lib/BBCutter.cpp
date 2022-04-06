@@ -519,6 +519,10 @@ LivePlayer::LivePlayer()
 , R(&inputbufferR)
 , listenermanager(NULL)
 {
+	inputbufferL.reserve (48000);
+	inputbufferR.reserve (48000);
+	pitchedbufferL.reserve (48000);
+	pitchedbufferR.reserve (48000);
 }
 
 void LivePlayer::SetListenerManager(ListenerManager *lm)

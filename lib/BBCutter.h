@@ -20,7 +20,6 @@
 #ifndef BBCUTTER_H
 #define BBCUTTER_H
 
-#include <valarray>
 #include <vector>
 #include <cmath>
 #include <cstdlib>
@@ -337,12 +336,12 @@ public:
   }
   
 private:
-	std::valarray<float> inputbufferL;
-	std::valarray<float> inputbufferR;
-	std::valarray<float> pitchedbufferL;
-	std::valarray<float> pitchedbufferR;
-	std::valarray<float> *L;
-	std::valarray<float> *R;
+	std::vector<float> inputbufferL;
+	std::vector<float> inputbufferR;
+	std::vector<float> pitchedbufferL;
+	std::vector<float> pitchedbufferR;
+	std::vector<float> *L;
+	std::vector<float> *R;
   long currentcut;
   long inputindex,readindex;
   float ll,lr,rl,rr;
