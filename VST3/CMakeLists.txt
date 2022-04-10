@@ -109,3 +109,17 @@ elseif(SMTG_WIN)
         )
     endif()
 endif(SMTG_MAC)
+
+include(CheckFunctionExists)
+check_function_exists(lrint HAVE_LRINT)
+if(HAVE_LRINT)
+  target_compile_definitions(lcdsp PRIVATE HAVE_LRINT=1)
+  target_compile_definitions(Livecut PRIVATE HAVE_LRINT=1)
+endif()
+
+check_function_exists(lrintf HAVE_LRINTF)
+if(HAVE_LRINTF)
+  target_compile_definitions(lcdsp PRIVATE HAVE_LRINTF=1)
+  target_compile_definitions(Livecut PRIVATE HAVE_LRINTF=1)
+endif()
+
