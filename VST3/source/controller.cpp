@@ -29,6 +29,7 @@
 
 #ifdef LIVECUT_VSTGUI_SUPPORT
 #include "vstgui4/vstgui/plugin-bindings/vst3editor.h"
+#include "vstgui4/vstgui/uidescription/uiattributes.h"
 #endif
 
 using namespace Steinberg;
@@ -44,12 +45,21 @@ struct LivecutController::EditorDelegate
 {
 #if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
 	using VST3Editor = VSTGUI::VST3Editor;
+	using CView = VSTGUI::CView;
+	using UIAttributes = VSTGUI::UIAttributes;
+	using IUIDescription = VSTGUI::IUIDescription;
+
 	void didOpen (VST3Editor* editor) override;
 	void onZoomChanged (VST3Editor* editor, double newZoom) override;
+	CView* verifyView (CView* view, const UIAttributes& attributes,
+	                   const IUIDescription* description, VST3Editor* editor) override;
 #endif
 
 	double editorZoom {1.};
+	static const std::vector<double> zoomFactors;
 };
+const std::vector<double> LivecutController::EditorDelegate::zoomFactors = {0.75, 1.0,  1.25,
+                                                                            1.50, 1.75, 2.0};
 
 //------------------------------------------------------------------------
 // LivecutController Implementation
@@ -182,7 +192,7 @@ IPlugView* PLUGIN_API LivecutController::createView (FIDString name)
 //------------------------------------------------------------------------
 void LivecutController::EditorDelegate::didOpen (VST3Editor* editor)
 {
-	editor->setAllowedZoomFactors ({0.75, 1.0, 1.25, 1.50, 1.75, 2.0});
+	editor->setAllowedZoomFactors (zoomFactors);
 	editor->setZoomFactor (editorZoom);
 }
 
@@ -190,6 +200,43 @@ void LivecutController::EditorDelegate::didOpen (VST3Editor* editor)
 void LivecutController::EditorDelegate::onZoomChanged (VST3Editor* editor, double newZoom)
 {
 	editorZoom = newZoom;
+}
+
+//------------------------------------------------------------------------
+auto LivecutController::EditorDelegate::verifyView (CView* view, const UIAttributes& attributes,
+                                                    const IUIDescription* description,
+                                                    VST3Editor* editor) -> CView*
+{
+	if (auto customViewName = attributes.getAttributeValue (IUIDescription::kCustomViewName))
+	{
+		if (*customViewName == "SetupMenu")
+		{
+			if (auto menu = dynamic_cast<VSTGUI::COptionMenu*> (view))
+			{
+				menu->setStyle (menu->getStyle () | VSTGUI::COptionMenu::kMultipleCheckStyle);
+				auto labelItem = new VSTGUI::CMenuItem ("UI Zoom");
+				labelItem->setEnabled (false);
+				menu->addEntry (labelItem);
+				for (auto zf : zoomFactors)
+				{
+					auto tag = static_cast<int32_t> (zf * 100);
+					auto str = VSTGUI::toString (tag);
+					str += " %";
+					auto item = new VSTGUI::CCommandMenuItem (str);
+					item->setTag (tag);
+					item->setActions ([editor, zf] (auto) { editor->setZoomFactor (zf); },
+					                  [this] (auto item) {
+						                  bool checked = item->getTag () ==
+						                                 static_cast<int32_t> (editorZoom * 100);
+						                  item->setChecked (checked);
+					                  });
+					item->setChecked (zf == editorZoom);
+					menu->addEntry (item);
+				}
+			}
+		}
+	}
+	return view;
 }
 
 #endif
