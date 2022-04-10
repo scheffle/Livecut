@@ -20,6 +20,10 @@ cmake -Dvst3sdk_SOURCE_DIR=$PATH_TO_THE_VST3_SDK ../VST3/
 cmake --build .
 ```
 
+### UI
+
+For the User Interface VSTGUI 4.11 or newer is required when building, otherwise the default host view will be shown.
+
 # The original info about it:
 
 Livecut

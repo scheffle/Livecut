@@ -22,24 +22,17 @@
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
 
-#ifdef LIVECUT_VSTGUI_SUPPORT
-#include "vstgui4/vstgui/plugin-bindings/vst3editor.h"
-#endif
-
 namespace Livecut {
 
 //------------------------------------------------------------------------
 //  LivecutController
 //------------------------------------------------------------------------
 class LivecutController : public Steinberg::Vst::EditControllerEx1
-#ifdef LIVECUT_VSTGUI_SUPPORT
-, public VSTGUI::VST3EditorDelegate
-#endif
 {
 public:
 //------------------------------------------------------------------------
-	LivecutController () = default;
-	~LivecutController () SMTG_OVERRIDE = default;
+	LivecutController ();
+	~LivecutController () SMTG_OVERRIDE;
 
 	// Create function
 	static Steinberg::FUnknown* createInstance (void* /*context*/)
@@ -66,15 +59,8 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-#ifdef LIVECUT_VSTGUI_SUPPORT
-	using VST3Editor = VSTGUI::VST3Editor;
-
-	void didOpen (VST3Editor* editor) override;
-#if VSTGUI_NEWER_THAN_4_10
-	void onZoomChanged (VST3Editor* editor, double newZoom) override;
-#endif // VSTGUI_NEWER_THAN_4_10
-#endif // LIVECUT_VSTGUI_SUPPORT
-	double editorZoom {1.};
+	struct EditorDelegate;
+	std::unique_ptr<EditorDelegate> editorDelegate;
 };
 
 //------------------------------------------------------------------------

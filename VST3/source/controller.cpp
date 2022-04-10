@@ -27,13 +27,36 @@
 #include "public.sdk/source/vst/vsthelpers.h"
 #include <string>
 
+#ifdef LIVECUT_VSTGUI_SUPPORT
+#include "vstgui4/vstgui/plugin-bindings/vst3editor.h"
+#endif
+
 using namespace Steinberg;
 
 //------------------------------------------------------------------------
 namespace Livecut {
 
 //------------------------------------------------------------------------
+struct LivecutController::EditorDelegate
+#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
+: public VSTGUI::VST3EditorDelegate
+#endif
+{
+#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
+	using VST3Editor = VSTGUI::VST3Editor;
+	void didOpen (VST3Editor* editor) override;
+	void onZoomChanged (VST3Editor* editor, double newZoom) override;
+#endif
+
+	double editorZoom {1.};
+};
+
+//------------------------------------------------------------------------
 // LivecutController Implementation
+//------------------------------------------------------------------------
+LivecutController::LivecutController () = default;
+LivecutController::~LivecutController () = default;
+
 //------------------------------------------------------------------------
 tresult PLUGIN_API LivecutController::initialize (FUnknown* context)
 {
@@ -56,6 +79,8 @@ tresult PLUGIN_API LivecutController::initialize (FUnknown* context)
 	parameters.getParameter (paramID (ParameterID::Bypass))->getInfo ().flags |=
 	    Vst::ParameterInfo::kIsBypass;
 
+	editorDelegate = std::make_unique<EditorDelegate> ();
+	
 	return result;
 }
 
@@ -63,7 +88,8 @@ tresult PLUGIN_API LivecutController::initialize (FUnknown* context)
 tresult PLUGIN_API LivecutController::terminate ()
 {
 	// Here the Plug-in will be de-instanciated, last possibility to remove some memory!
-
+	editorDelegate.reset ();
+	
 	//---do not forget to call parent ------
 	return EditControllerEx1::terminate ();
 }
@@ -114,7 +140,7 @@ tresult PLUGIN_API LivecutController::setState (IBStream* state)
 		IBStreamer streamer (state, kLittleEndian);
 		double value {};
 		if (streamer.readDouble (value))
-			editorZoom = value;
+			editorDelegate->editorZoom = value;
 	}
 
 	return kResultTrue;
@@ -129,7 +155,7 @@ tresult PLUGIN_API LivecutController::getState (IBStream* state)
 	if (Vst::Helpers::isProjectState (state))
 	{
 		IBStreamer streamer (state, kLittleEndian);
-		streamer.writeDouble (editorZoom);
+		streamer.writeDouble (editorDelegate->editorZoom);
 	}
 	
 	return kResultTrue;
@@ -141,8 +167,10 @@ IPlugView* PLUGIN_API LivecutController::createView (FIDString name)
 	// Here the Host wants to open your editor (if you have one)
 	if (FIDStringsEqual (name, Vst::ViewType::kEditor))
 	{
-#ifdef LIVECUT_VSTGUI_SUPPORT
-		return new VSTGUI::VST3Editor (this, "editor", "editor.uidesc");
+#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
+		auto editor = new VSTGUI::VST3Editor (this, "editor", "editor.uidesc");
+		editor->setDelegate (editorDelegate.get ());
+		return editor;
 #else
 		return nullptr;
 #endif
@@ -150,21 +178,19 @@ IPlugView* PLUGIN_API LivecutController::createView (FIDString name)
 	return nullptr;
 }
 
-#ifdef LIVECUT_VSTGUI_SUPPORT
+#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
 //------------------------------------------------------------------------
-void LivecutController::didOpen (VST3Editor* editor)
+void LivecutController::EditorDelegate::didOpen (VST3Editor* editor)
 {
 	editor->setAllowedZoomFactors ({0.75, 1.0, 1.25, 1.50, 1.75, 2.0});
 	editor->setZoomFactor (editorZoom);
 }
 
-#if VSTGUI_NEWER_THAN_4_10
 //------------------------------------------------------------------------
-void LivecutController::onZoomChanged (VST3Editor* editor, double newZoom)
+void LivecutController::EditorDelegate::onZoomChanged (VST3Editor* editor, double newZoom)
 {
 	editorZoom = newZoom;
 }
-#endif
 
 #endif
 //------------------------------------------------------------------------
