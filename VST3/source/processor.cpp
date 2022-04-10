@@ -182,9 +182,26 @@ tresult PLUGIN_API LivecutProcessor::setState (IBStream* state)
 	// called when we load a preset, the model has to be reloaded
 	IBStreamer streamer (state, kLittleEndian);
 
+	uint32_t stateId = {};
+	if (!streamer.readInt32u (stateId))
+		return kResultFalse;
+	if (stateId != StateIdentifier)
+		return kResultFalse;
+	uint32_t numParametersInState = {};
+	if (!streamer.readInt32u (numParametersInState))
+		return kResultFalse;
+	if (numParametersInState > paramID (ParameterID::ParameterCount))
+		return kResultFalse;
+
 	ParameterArray parameterState;
-	for (auto index = 0u; index < paramID (ParameterID::ParameterCount); ++index)
-		streamer.readDouble (parameterState[index]);
+	for (auto index = 0u; index < parameterState.size (); ++index)
+		parameterState[index] = parameterDescriptions[index].defaultNormalized;
+
+	for (auto index = 0u; index < numParametersInState; ++index)
+	{
+		if (!streamer.readDouble (parameterState[index]))
+			return kInternalError;
+	}
 
 	stateTransfer.transferObject_ui (std::make_unique<ParameterArray> (std::move (parameterState)));
 
@@ -196,6 +213,11 @@ tresult PLUGIN_API LivecutProcessor::getState (IBStream* state)
 {
 	// here we need to save the model
 	IBStreamer streamer (state, kLittleEndian);
+
+	if (!streamer.writeInt32u (StateIdentifier))
+		return kResultFalse;
+	if (!streamer.writeInt32u (paramID (ParameterID::ParameterCount)))
+		return kResultFalse;
 
 	for (auto index = 0u; index < paramID (ParameterID::ParameterCount); ++index)
 		streamer.writeDouble (parameters[index]);

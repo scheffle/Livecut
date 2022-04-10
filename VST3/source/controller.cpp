@@ -76,11 +76,29 @@ tresult PLUGIN_API LivecutController::setComponentState (IBStream* state)
 		return kResultFalse;
 
 	IBStreamer streamer (state, kLittleEndian);
+
+	uint32_t stateId = {};
+	if (!streamer.readInt32u (stateId))
+		return kResultFalse;
+	if (stateId != StateIdentifier)
+		return kResultFalse;
+	uint32_t numParametersInState = {};
+	if (!streamer.readInt32u (numParametersInState))
+		return kResultFalse;
+	if (numParametersInState > paramID (ParameterID::ParameterCount))
+		return kResultFalse;
+
 	double value;
-	for (auto index = 0u; index < paramID (ParameterID::ParameterCount); ++index)
+	for (auto index = 0u; index < numParametersInState; ++index)
 	{
 		streamer.readDouble (value);
-		parameters.getParameterByIndex (index)->setNormalized (value);
+		if (auto parameter = parameters.getParameterByIndex ((index)))
+			parameter->setNormalized (value);
+	}
+	for (auto index = numParametersInState; index < paramID (ParameterID::ParameterCount); ++index)
+	{
+		if (auto parameter = parameters.getParameterByIndex (index))
+			parameter->setNormalized (parameterDescriptions[index].defaultNormalized);
 	}
 
 	return kResultOk;

@@ -30,6 +30,8 @@ namespace Livecut {
 
 using Steinberg::Vst::ParamID;
 
+static constexpr const uint32_t StateIdentifier = 'lvct';
+
 //------------------------------------------------------------------------
 enum class ParameterID
 {
