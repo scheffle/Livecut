@@ -135,6 +135,7 @@ tresult PLUGIN_API LivecutProcessor::process (Vst::ProcessData& data)
 			if (inputs[index] != outputs[index])
 				memcpy(outputs[index], inputs[index], data.numSamples * sizeof (float));
 		}
+		outs.silenceFlags = ins.silenceFlags;
 		return kResultTrue;
 	}
 
