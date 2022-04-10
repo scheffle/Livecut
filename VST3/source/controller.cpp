@@ -24,11 +24,8 @@
 #include "parameter.h"
 #include "pids.h"
 #include "base/source/fstreamer.h"
+#include "public.sdk/source/vst/vsthelpers.h"
 #include <string>
-
-#ifdef LIVECUT_VSTGUI_SUPPORT
-#include "vstgui4/vstgui/plugin-bindings/vst3editor.h"
-#endif
 
 using namespace Steinberg;
 
@@ -94,6 +91,14 @@ tresult PLUGIN_API LivecutController::setState (IBStream* state)
 {
 	// Here you get the state of the controller
 
+	if (Vst::Helpers::isProjectState (state) == kResultTrue)
+	{
+		IBStreamer streamer (state, kLittleEndian);
+		double value {};
+		if (streamer.readDouble (value))
+			editorZoom = value;
+	}
+
 	return kResultTrue;
 }
 
@@ -103,6 +108,12 @@ tresult PLUGIN_API LivecutController::getState (IBStream* state)
 	// Here you are asked to deliver the state of the controller (if needed)
 	// Note: the real state of your plug-in is saved in the processor
 
+	if (Vst::Helpers::isProjectState (state))
+	{
+		IBStreamer streamer (state, kLittleEndian);
+		streamer.writeDouble (editorZoom);
+	}
+	
 	return kResultTrue;
 }
 
@@ -121,5 +132,22 @@ IPlugView* PLUGIN_API LivecutController::createView (FIDString name)
 	return nullptr;
 }
 
+#ifdef LIVECUT_VSTGUI_SUPPORT
+//------------------------------------------------------------------------
+void LivecutController::didOpen (VST3Editor* editor)
+{
+	editor->setAllowedZoomFactors ({0.75, 1.0, 1.25, 1.50, 1.75, 2.0});
+	editor->setZoomFactor (editorZoom);
+}
+
+#if VSTGUI_NEWER_THAN_4_10
+//------------------------------------------------------------------------
+void LivecutController::onZoomChanged (VST3Editor* editor, double newZoom)
+{
+	editorZoom = newZoom;
+}
+#endif
+
+#endif
 //------------------------------------------------------------------------
 } // namespace Livecut
