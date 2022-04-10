@@ -237,7 +237,7 @@ static float trapeze(long i,long fade, long size)
   const long fadein  = (i<fade);
   const long fadeout = (i>=(size-fade));
   const float env = fadein                * (i)
-  + (1-fadein)*(1-fadeout)* (fade);
+  + (1-fadein)*(1-fadeout)* (fade)
   +  fadeout              * (fade-i);
   return float(env)/float(fade);
 }
