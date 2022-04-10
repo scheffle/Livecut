@@ -71,8 +71,12 @@ protected:
 	ParameterArray parameters;
 	Kernel kernel;
 	bool doBypass {false};
-
+	
 	RTTransfer stateTransfer;
+
+	struct ParameterUpdater;
+	std::unique_ptr<ParameterUpdater> cutCountUpdater;
+	std::unique_ptr<ParameterUpdater> blockCountUpdater;
 };
 
 //------------------------------------------------------------------------

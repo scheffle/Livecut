@@ -28,7 +28,73 @@
 
 using namespace Steinberg;
 
+//------------------------------------------------------------------------
 namespace Livecut {
+
+//------------------------------------------------------------------------
+struct LivecutProcessor::ParameterUpdater
+{
+	ParameterUpdater () noexcept = default;
+	ParameterUpdater (ParamID parameterID) : parameterID (parameterID) {}
+
+	void setParameterID (ParamID pID) noexcept { parameterID = pID; }
+
+	void init (Vst::SampleRate sampleRate, double hertz = 60.) noexcept
+	{
+		updateInterval = static_cast<Vst::TSamples> (sampleRate / hertz);
+		updateCountdown = 0;
+	}
+
+	inline void process (Vst::ParamValue currentValue, Vst::ProcessData& data) noexcept
+	{
+		assert (updateInterval > 0 && "update interval not set");
+		if (reached (data.numSamples))
+		{
+			checkAndSendParameterUpdate (currentValue, data);
+		}
+	}
+
+	template <typename Proc>
+	inline void process (Vst::ParamValue currentValue, Vst::ProcessData& data, Proc func) noexcept
+	{
+		assert (updateInterval > 0 && "update interval not set");
+		if (reached (data.numSamples))
+		{
+			checkAndSendParameterUpdate (func (lastValue, currentValue, updateInterval), data);
+		}
+	}
+
+private:
+	inline bool reached (int32 samples) noexcept
+	{
+		updateCountdown -= samples;
+		if (updateCountdown <= 0)
+		{
+			updateCountdown += updateInterval;
+			// if update interval is smaller than the processing block, make sure we don't underflow
+			if (updateCountdown <= 0)
+				updateCountdown = updateInterval;
+			return true;
+		}
+		return false;
+	}
+
+	inline void checkAndSendParameterUpdate (Vst::ParamValue newValue,
+	                                         Vst::ProcessData& data) noexcept
+	{
+		if (lastValue == newValue || data.outputParameterChanges == nullptr)
+			return;
+		int32 index;
+		if (auto queue = data.outputParameterChanges->addParameterData (parameterID, index))
+			queue->addPoint (0, newValue, index);
+		lastValue = newValue;
+	}
+
+	Vst::ParamID parameterID {0};
+	Vst::ParamValue lastValue {0};
+	Vst::TSamples updateCountdown {0};
+	Vst::TSamples updateInterval {0};
+};
 
 //------------------------------------------------------------------------
 // LivecutProcessor
@@ -44,6 +110,9 @@ LivecutProcessor::LivecutProcessor ()
 	    .needProjectTimeMusic ()
 	    .needTimeSignature ()
 	    .needTransportState ();
+
+	cutCountUpdater = std::make_unique<ParameterUpdater> (paramID (ParameterID::CutCount));
+	blockCountUpdater = std::make_unique<ParameterUpdater> (paramID (ParameterID::BlockCount));
 }
 
 //------------------------------------------------------------------------
@@ -162,6 +231,18 @@ tresult PLUGIN_API LivecutProcessor::process (Vst::ProcessData& data)
 	if (peak.first <= silence && peak.second <= silence)
 		outs.silenceFlags = 0x3;
 
+	parameters[paramID(ParameterID::CutCount)] += kernel.getCutCount () / 1000.;
+	parameters[paramID(ParameterID::BlockCount)] += kernel.getBlockCount () / 1000.;
+	cutCountUpdater->process (parameters[paramID (ParameterID::CutCount)], data,
+	                          [this] (auto, auto v, auto) {
+		                          parameters[paramID (ParameterID::CutCount)] = 0.;
+		                          return v;
+	                          });
+	blockCountUpdater->process (parameters[paramID (ParameterID::BlockCount)], data,
+	                            [this] (auto, auto v, auto) {
+		                            parameters[paramID (ParameterID::BlockCount)] = 0.;
+		                            return v;
+	                            });
 	return kResultOk;
 }
 
@@ -169,6 +250,8 @@ tresult PLUGIN_API LivecutProcessor::process (Vst::ProcessData& data)
 tresult PLUGIN_API LivecutProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	kernel.setSampleRate (newSetup.sampleRate);
+	cutCountUpdater->init (newSetup.sampleRate, 30);
+	blockCountUpdater->init (newSetup.sampleRate, 30);
 	return AudioEffect::setupProcessing (newSetup);
 }
 

@@ -2,16 +2,16 @@
  This file is part of Livecut
  Copyright 2004 by Remy Muller.
  VST3 SDK Adaption by Arne Scheffler
- 
+
  Livecut can be redistributed and/or modified under the terms of the
  GNU General Public License, as published by the Free Software Foundation;
  either version 2 of the License, or (at your option) any later version.
- 
+
  Livecut is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with Livecut; if not, visit www.gnu.org/licenses or write to the
  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
@@ -39,6 +39,33 @@ Parameter::Parameter (ParamID pid, const ParamDesc& desc, int32 flags) : desc (d
 	}
 	if (desc.stringList)
 		info.flags |= Flags::kIsList;
+}
+
+//------------------------------------------------------------------------
+auto Parameter::addListener (const ValueChangedFunc& func) -> Token
+{
+	auto token = ++tokenCounter;
+	listeners.emplace_back (func, token);
+	return token;
+}
+
+//------------------------------------------------------------------------
+void Parameter::removeListener (Token t)
+{
+	auto it = std::find_if (listeners.begin (), listeners.end (),
+	                        [&] (const auto& p) { return p.second == t; });
+	if (it != listeners.end ())
+		listeners.erase (it);
+}
+
+//------------------------------------------------------------------------
+bool Parameter::setNormalized (ParamValue v)
+{
+	auto res = Steinberg::Vst::Parameter::setNormalized (v);
+	if (res)
+		std::for_each (listeners.begin (), listeners.end (),
+		               [this] (const auto& p) { p.first (*this, getNormalized ()); });
+	return res;
 }
 
 //------------------------------------------------------------------------

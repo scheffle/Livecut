@@ -125,8 +125,8 @@
 			"UIEditController": {
 				"EditViewScale": "1",
 				"EditorSize": "0, 0, 1639, 964",
-				"SplitViewSize_0_0": "0.6897654584221748486072556261206045746803",
-				"SplitViewSize_0_1": "0.288912579957356085991193594963988289237",
+				"SplitViewSize_0_0": "0.6479585887526652099310808807786088436842",
+				"SplitViewSize_0_1": "0.3307194496268656691562171090481569990516",
 				"SplitViewSize_1_0": "0.6599147121535181570450845356390345841646",
 				"SplitViewSize_1_1": "0.3358208955223880853857565398357110098004",
 				"SplitViewSize_2_0": "0.7406955460646735822649588953936472535133",
@@ -136,7 +136,7 @@
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "20"
+				"SelectedRow": "22"
 			},
 			"UIColorsDataSource": {
 				"SelectedRow": "8"
@@ -177,10 +177,10 @@
 							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "495, 325",
+							"origin": "490, 325",
 							"round-rect-radius": "2",
 							"shadow-color": "~ RedCColor",
-							"size": "105, 30",
+							"size": "110, 30",
 							"style-3D-in": "false",
 							"style-3D-out": "false",
 							"style-no-draw": "false",
@@ -2112,7 +2112,7 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "30",
+							"title": "0",
 							"transparent": "false",
 							"value-precision": "2",
 							"wants-focus": "false",
@@ -2221,7 +2221,7 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "20",
+							"title": "0",
 							"transparent": "false",
 							"value-precision": "2",
 							"wants-focus": "false",
@@ -2330,7 +2330,7 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "50",
+							"title": "0",
 							"transparent": "false",
 							"value-precision": "2",
 							"wants-focus": "false",
@@ -2439,7 +2439,7 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "90",
+							"title": "100",
 							"transparent": "false",
 							"value-precision": "2",
 							"wants-focus": "false",
@@ -2680,6 +2680,7 @@
 							"origin": "565, 10",
 							"round-rect-radius": "4",
 							"size": "15, 20",
+							"title": "Title",
 							"transparent": "false",
 							"wants-focus": "true",
 							"wheel-inc-value": "0.1"
@@ -3112,6 +3113,7 @@
 							"origin": "565, 155",
 							"round-rect-radius": "4",
 							"size": "15, 20",
+							"title": "Title",
 							"transparent": "false",
 							"wants-focus": "true",
 							"wheel-inc-value": "0.1"
@@ -3595,6 +3597,583 @@
 							"value-precision": "2",
 							"wants-focus": "false",
 							"wheel-inc-value": "0.1"
+						}
+					},
+					"CLayeredViewContainer": {
+						"attributes": {
+							"background-color": "control.text",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CLayeredViewContainer",
+							"mouse-enabled": "false",
+							"opacity": "1",
+							"origin": "480, 315",
+							"size": "130, 50",
+							"transparent": "true",
+							"wants-focus": "false",
+							"z-index": "0"
+						},
+						"children": {
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "10, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "10, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "20, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "20, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "40, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "40, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "30, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "30, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "80, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "80, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "70, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "70, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "50, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "60, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "60, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "50, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "100, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "100, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "90, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "90, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "110, 30",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "110, 10",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "10, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "20, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "40, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "30, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "80, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "70, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "50, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "60, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "100, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "90, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CControl": {
+								"attributes": {
+									"class": "CControl",
+									"control-tag": "CutProc",
+									"custom-view-name": "CutVisBox",
+									"default-value": "0",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "110, 20",
+									"size": "10, 10",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							}
 						}
 					}
 				}

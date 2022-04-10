@@ -33,12 +33,13 @@
 namespace Livecut {
 
 //------------------------------------------------------------------------
-struct Kernel
+struct Kernel : BBCutListener
 {
 	Kernel () : bbcutter (player)
 	{
 		bbcutter.RegisterListener (&crusher);
 		bbcutter.RegisterListener (&comb);
+		bbcutter.RegisterListener (this);
 		bbcutter.SetSubdiv (subDiv);
 	}
 
@@ -105,6 +106,8 @@ struct Kernel
 	std::pair<float, float> process (StereoBuffer inputs, StereoBuffer outputs, uint32_t numSamples,
 	                                 const TimeInfo& timeInfo) noexcept
 	{
+		phraseCount = blockCount = unitCount = cutCount = 0;
+
 		auto numSamplesD = static_cast<double> (numSamples);
 		auto subDivNumerator = static_cast<double> (subDiv) / timeInfo.numerator;
 		auto ppqBlockDuration = (numSamplesD / sampleRate) * (timeInfo.tempo / 60.0);
@@ -151,11 +154,20 @@ struct Kernel
 			oldMeasure = measure;
 			position += divPerSample;
 		}
-		
 		return peak;
 	}
 
+	uint32_t getPhraseCount () const { return phraseCount; }
+	uint32_t getBlockCount () const { return blockCount; }
+	uint32_t getUnitCount () const { return unitCount; }
+	uint32_t getCutCount () const { return cutCount; }
+
 private:
+	void OnPhrase (long bar, long sd) { ++phraseCount; }
+	void OnBlock (long bar, long sd) { ++blockCount; }
+	void OnUnit (long bar, long sd) { ++unitCount; }
+	void OnCut (long cut, long numcuts) { ++cutCount; }
+
 	LivePlayer player;
 	BitCrusher crusher;
 	Comb comb;
@@ -163,6 +175,11 @@ private:
 
 	double sampleRate {44100.};
 	uint32_t subDiv {6};
+
+	uint32_t phraseCount {0};
+	uint32_t blockCount {0};
+	uint32_t unitCount {0};
+	uint32_t cutCount {0};
 };
 
 //------------------------------------------------------------------------

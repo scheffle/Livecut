@@ -45,6 +45,8 @@ smtg_add_vst3plugin(Livecut
     source/processor.cpp
     source/controller.h
     source/controller.cpp
+    source/editordelegate.cpp
+    source/editordelegate.h
     source/entry.cpp
 )
 

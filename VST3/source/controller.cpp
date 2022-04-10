@@ -2,16 +2,16 @@
  This file is part of Livecut
  Copyright 2004 by Remy Muller.
  VST3 SDK Adaption by Arne Scheffler
- 
+
  Livecut can be redistributed and/or modified under the terms of the
  GNU General Public License, as published by the Free Software Foundation;
  either version 2 of the License, or (at your option) any later version.
- 
+
  Livecut is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with Livecut; if not, visit www.gnu.org/licenses or write to the
  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
@@ -23,43 +23,16 @@
 #include "paramdesc.h"
 #include "parameter.h"
 #include "pids.h"
-#include "base/source/fstreamer.h"
+#include "editordelegate.h"
 #include "public.sdk/source/vst/vsthelpers.h"
-#include <string>
+#include "base/source/fstreamer.h"
 
-#ifdef LIVECUT_VSTGUI_SUPPORT
-#include "vstgui4/vstgui/plugin-bindings/vst3editor.h"
-#include "vstgui4/vstgui/uidescription/uiattributes.h"
-#endif
+#include <string>
 
 using namespace Steinberg;
 
 //------------------------------------------------------------------------
 namespace Livecut {
-
-//------------------------------------------------------------------------
-struct LivecutController::EditorDelegate
-#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
-: public VSTGUI::VST3EditorDelegate
-#endif
-{
-#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
-	using VST3Editor = VSTGUI::VST3Editor;
-	using CView = VSTGUI::CView;
-	using UIAttributes = VSTGUI::UIAttributes;
-	using IUIDescription = VSTGUI::IUIDescription;
-
-	void didOpen (VST3Editor* editor) override;
-	void onZoomChanged (VST3Editor* editor, double newZoom) override;
-	CView* verifyView (CView* view, const UIAttributes& attributes,
-	                   const IUIDescription* description, VST3Editor* editor) override;
-#endif
-
-	double editorZoom {1.};
-	static const std::vector<double> zoomFactors;
-};
-const std::vector<double> LivecutController::EditorDelegate::zoomFactors = {0.75, 1.0,  1.25,
-                                                                            1.50, 1.75, 2.0};
 
 //------------------------------------------------------------------------
 // LivecutController Implementation
@@ -89,8 +62,13 @@ tresult PLUGIN_API LivecutController::initialize (FUnknown* context)
 	parameters.getParameter (paramID (ParameterID::Bypass))->getInfo ().flags |=
 	    Vst::ParameterInfo::kIsBypass;
 
-	editorDelegate = std::make_unique<EditorDelegate> ();
-	
+	parameters.getParameter (paramID (ParameterID::CutCount))->getInfo ().flags =
+	    Vst::ParameterInfo::kIsReadOnly;
+	parameters.getParameter (paramID (ParameterID::BlockCount))->getInfo ().flags =
+	    Vst::ParameterInfo::kIsReadOnly;
+
+	editorDelegate = std::make_unique<EditorDelegate> (parameters);
+
 	return result;
 }
 
@@ -99,7 +77,7 @@ tresult PLUGIN_API LivecutController::terminate ()
 {
 	// Here the Plug-in will be de-instanciated, last possibility to remove some memory!
 	editorDelegate.reset ();
-	
+
 	//---do not forget to call parent ------
 	return EditControllerEx1::terminate ();
 }
@@ -167,7 +145,7 @@ tresult PLUGIN_API LivecutController::getState (IBStream* state)
 		IBStreamer streamer (state, kLittleEndian);
 		streamer.writeDouble (editorDelegate->editorZoom);
 	}
-	
+
 	return kResultTrue;
 }
 
@@ -188,57 +166,5 @@ IPlugView* PLUGIN_API LivecutController::createView (FIDString name)
 	return nullptr;
 }
 
-#if defined(LIVECUT_VSTGUI_SUPPORT) && VSTGUI_NEWER_THAN_4_10
-//------------------------------------------------------------------------
-void LivecutController::EditorDelegate::didOpen (VST3Editor* editor)
-{
-	editor->setAllowedZoomFactors (zoomFactors);
-	editor->setZoomFactor (editorZoom);
-}
-
-//------------------------------------------------------------------------
-void LivecutController::EditorDelegate::onZoomChanged (VST3Editor* editor, double newZoom)
-{
-	editorZoom = newZoom;
-}
-
-//------------------------------------------------------------------------
-auto LivecutController::EditorDelegate::verifyView (CView* view, const UIAttributes& attributes,
-                                                    const IUIDescription* description,
-                                                    VST3Editor* editor) -> CView*
-{
-	if (auto customViewName = attributes.getAttributeValue (IUIDescription::kCustomViewName))
-	{
-		if (*customViewName == "SetupMenu")
-		{
-			if (auto menu = dynamic_cast<VSTGUI::COptionMenu*> (view))
-			{
-				menu->setStyle (menu->getStyle () | VSTGUI::COptionMenu::kMultipleCheckStyle);
-				auto labelItem = new VSTGUI::CMenuItem ("UI Zoom");
-				labelItem->setEnabled (false);
-				menu->addEntry (labelItem);
-				for (auto zf : zoomFactors)
-				{
-					auto tag = static_cast<int32_t> (zf * 100);
-					auto str = VSTGUI::toString (tag);
-					str += " %";
-					auto item = new VSTGUI::CCommandMenuItem (str);
-					item->setTag (tag);
-					item->setActions ([editor, zf] (auto) { editor->setZoomFactor (zf); },
-					                  [this] (auto item) {
-						                  bool checked = item->getTag () ==
-						                                 static_cast<int32_t> (editorZoom * 100);
-						                  item->setChecked (checked);
-					                  });
-					item->setChecked (zf == editorZoom);
-					menu->addEntry (item);
-				}
-			}
-		}
-	}
-	return view;
-}
-
-#endif
 //------------------------------------------------------------------------
 } // namespace Livecut

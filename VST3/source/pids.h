@@ -69,6 +69,8 @@ enum class ParameterID
 	CombMinDelay,
 	CombMaxDelay,
 	Bypass,
+	CutCount,
+	BlockCount,
 	ParameterCount
 };
 
@@ -173,6 +175,8 @@ static constexpr std::array<ParamDesc, paramID (ParameterID::ParameterCount)>
          [] (auto v) { return normalizedToPlain (1., 50., v); },
          {Range {1., 50.}}},
         {u"Bypass", 0., [] (auto v) { return v > 0.5 ? 1. : 0.; }, {StepCount {1}}},
+        {u"CutCount", 0., [] (auto v) { return v; }, {Range {0., 1000.}}},
+        {u"BlockCount", 0., [] (auto v) { return v; }, {Range {0., 1000.}}},
     }};
 
 //------------------------------------------------------------------------
