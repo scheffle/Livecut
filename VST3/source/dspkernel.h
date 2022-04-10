@@ -102,8 +102,8 @@ struct Kernel
 		bool transportChanged {false};
 	};
 
-	void process (StereoBuffer inputs, StereoBuffer outputs, uint32_t numSamples,
-	              const TimeInfo& timeInfo) noexcept
+	std::pair<float, float> process (StereoBuffer inputs, StereoBuffer outputs, uint32_t numSamples,
+	                                 const TimeInfo& timeInfo) noexcept
 	{
 		auto numSamplesD = static_cast<double> (numSamples);
 		auto subDivNumerator = static_cast<double> (subDiv) / timeInfo.numerator;
@@ -121,6 +121,8 @@ struct Kernel
 
 		if (timeInfo.transportChanged && timeInfo.playing)
 			bbcutter.SetPosition (oldMeasure, oldPositionInMeasure);
+
+		std::pair<float, float> peak = {0.f, 0.f};
 
 		for (int i = 0; i < numSamples; i++)
 		{
@@ -140,9 +142,17 @@ struct Kernel
 			comb.tick (l, r, l, r);
 			outputs[0][i] = l;
 			outputs[1][i] = r;
+			auto absL = std::abs (l);
+			auto absR = std::abs (r);
+			if (absL > peak.first)
+				peak.first = absL;
+			if (absR > peak.second)
+				peak.second = absR;
 			oldMeasure = measure;
 			position += divPerSample;
 		}
+		
+		return peak;
 	}
 
 private:

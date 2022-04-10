@@ -155,7 +155,12 @@ tresult PLUGIN_API LivecutProcessor::process (Vst::ProcessData& data)
 		timeInfo.transportChanged = false; // TODO: need transport state observer
 	}
 
-	kernel.process (inputs, outputs, data.numSamples, timeInfo);
+	auto peak = kernel.process (inputs, outputs, data.numSamples, timeInfo);
+
+	// propagate possible silence to next plug-in
+	constexpr auto silence = 0.f;
+	if (peak.first <= silence && peak.second <= silence)
+		outs.silenceFlags = 0x3;
 
 	return kResultOk;
 }
