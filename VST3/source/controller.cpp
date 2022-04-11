@@ -91,12 +91,12 @@ tresult PLUGIN_API LivecutController::setComponentState (IBStream* state)
 
 	IBStreamer streamer (state, kLittleEndian);
 
-	uint32_t stateId = {};
+	uint32 stateId = {};
 	if (!streamer.readInt32u (stateId))
 		return kResultFalse;
 	if (stateId != StateIdentifier)
 		return kResultFalse;
-	uint32_t numParametersInState = {};
+	uint32 numParametersInState = {};
 	if (!streamer.readInt32u (numParametersInState))
 		return kResultFalse;
 	if (numParametersInState > paramID (ParameterID::ParameterCount))

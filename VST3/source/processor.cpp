@@ -178,8 +178,8 @@ tresult PLUGIN_API LivecutProcessor::process (Vst::ProcessData& data)
 				Vst::ParamValue value;
 				int32 sampleOffset;
 				int32 numPoints = paramQueue->getPointCount ();
-				paramQueue->getPoint (numPoints - 1, sampleOffset, value);
-				updateKernelParameter (paramQueue->getParameterId (), value);
+				if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) == kResultTrue)
+					updateKernelParameter (paramQueue->getParameterId (), value);
 			}
 		}
 	}
@@ -270,12 +270,12 @@ tresult PLUGIN_API LivecutProcessor::setState (IBStream* state)
 	// called when we load a preset, the model has to be reloaded
 	IBStreamer streamer (state, kLittleEndian);
 
-	uint32_t stateId = {};
+	uint32 stateId = {};
 	if (!streamer.readInt32u (stateId))
 		return kResultFalse;
 	if (stateId != StateIdentifier)
 		return kResultFalse;
-	uint32_t numParametersInState = {};
+	uint32 numParametersInState = {};
 	if (!streamer.readInt32u (numParametersInState))
 		return kResultFalse;
 	if (numParametersInState > paramID (ParameterID::ParameterCount))

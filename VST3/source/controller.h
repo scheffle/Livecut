@@ -21,6 +21,7 @@
 #pragma once
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
+#include <memory>
 
 namespace Livecut {
 

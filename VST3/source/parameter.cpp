@@ -27,12 +27,12 @@ using namespace Steinberg;
 namespace Livecut {
 
 //------------------------------------------------------------------------
-Parameter::Parameter (ParamID pid, const ParamDesc& desc, int32 flags) : desc (desc)
+Parameter::Parameter (ParamID pid, const ParamDesc& desc, int32_t flags) : desc (desc)
 {
 	info.id = pid;
 	info.flags = flags;
 	info.defaultNormalizedValue = desc.defaultNormalized;
-	tstrcpy (info.title, desc.name);
+	tstrcpy (info.title, reinterpret_cast<const tchar*> (desc.name));
 	if (auto stepCount = std::get_if<StepCount> (&desc.rangeOrStepCount))
 	{
 		info.stepCount = stepCount->value;
@@ -73,7 +73,7 @@ void Parameter::toString (ParamValue valueNormalized, String128 string) const
 {
 	auto plain = toPlain (valueNormalized);
 	if (auto stepCount = std::get_if<StepCount> (&desc.rangeOrStepCount); desc.stringList)
-		tstrcpy (string, desc.stringList[static_cast<size_t> (plain - stepCount->startValue)]);
+		tstrcpy (string, reinterpret_cast<const tchar*> (desc.stringList[static_cast<size_t> (plain - stepCount->startValue)]));
 	else
 	{
 		UString wrapper (string, str16BufferSize (String128));
@@ -89,7 +89,7 @@ bool Parameter::fromString (const TChar* string, ParamValue& valueNormalized) co
 	{
 		for (auto index = 0; index < std::get<StepCount> (desc.rangeOrStepCount).value; ++index)
 		{
-			if (tstrcmp (string, desc.stringList[index]) == 0)
+			if (tstrcmp (string, reinterpret_cast<const tchar*> (desc.stringList[index])) == 0)
 			{
 				valueNormalized = toNormalized (index);
 				return true;
