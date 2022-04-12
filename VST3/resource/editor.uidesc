@@ -4,30 +4,30 @@
 		"bitmaps": {},
 		"fonts": {
 			"control.normal": {
-				"font-name": "Arial",
+				"font-name": "Symbola",
 				"size": "10"
 			},
 			"control.small": {
-				"font-name": "Arial",
+				"font-name": "Symbola",
 				"size": "7"
 			},
 			"gear": {
 				"bold": "true",
-				"font-name": "Arial",
-				"size": "18"
+				"font-name": "Symbola",
+				"size": "14"
 			},
 			"label": {
-				"font-name": "Arial",
+				"font-name": "Symbola",
 				"size": "10"
 			},
 			"logo": {
 				"bold": "true",
-				"font-name": "Arial",
+				"font-name": "Symbola",
 				"size": "18"
 			},
 			"section": {
 				"bold": "true",
-				"font-name": "Arial",
+				"font-name": "Symbola",
 				"size": "12"
 			}
 		},

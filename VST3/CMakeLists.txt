@@ -82,6 +82,13 @@ smtg_target_add_plugin_snapshots (Livecut
         resource/A5CBCDB2B9745B88A69760B164E92582_snapshot_2.0x.png
 )
 
+smtg_target_add_plugin_resources (Livecut
+	OUTPUT_SUBDIRECTORY
+		fonts
+    RESOURCES
+        resource/Symbola.ttf
+)
+
 target_link_libraries(Livecut
     PRIVATE
         sdk
