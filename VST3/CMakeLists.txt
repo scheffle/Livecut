@@ -96,6 +96,9 @@ target_link_libraries(Livecut
 )
 
 if(SMTG_MAC)
+	smtg_target_setup_universal_binary(lcdsp)
+	smtg_target_setup_universal_binary(Livecut)
+
     set(CMAKE_OSX_DEPLOYMENT_TARGET 10.14)
     smtg_target_set_bundle(Livecut
         BUNDLE_IDENTIFIER com.smartelectronix.mdsp.Livecut
