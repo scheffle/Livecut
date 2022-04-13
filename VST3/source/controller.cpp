@@ -28,6 +28,7 @@
 #include "base/source/fstreamer.h"
 
 #include <string>
+#include <string_view>
 
 using namespace Steinberg;
 
@@ -68,6 +69,28 @@ tresult PLUGIN_API LivecutController::initialize (FUnknown* context)
 	    Vst::ParameterInfo::kIsReadOnly;
 
 	editorDelegate = std::make_unique<EditorDelegate> (parameters);
+
+	auto freqToPlainFunc = [sampleRate = &sampleRate] (const Parameter& param, Vst::ParamValue norm)
+	{
+		return normalizedToPlain (*sampleRate / 100, *sampleRate, norm);
+	};
+	auto freqToNormFunc = [sampleRate = &sampleRate] (const Parameter& param, Vst::ParamValue norm)
+	{
+		return plainToNormalized (*sampleRate / 100, *sampleRate, norm);
+	};
+
+	if (auto param = static_cast<Parameter*> (
+	        parameters.getParameter (paramID (ParameterID::CrusherMinFreq))))
+	{
+		param->setCustomToPlainFunc (freqToPlainFunc);
+		param->setCustomToNormalizedFunc (freqToNormFunc);
+	}
+	if (auto param = static_cast<Parameter*> (
+	        parameters.getParameter (paramID (ParameterID::CrusherMaxFreq))))
+	{
+		param->setCustomToPlainFunc (freqToPlainFunc);
+		param->setCustomToNormalizedFunc (freqToNormFunc);
+	}
 
 	return result;
 }
@@ -164,6 +187,33 @@ IPlugView* PLUGIN_API LivecutController::createView (FIDString name)
 #endif
 	}
 	return nullptr;
+}
+
+//------------------------------------------------------------------------
+void LivecutController::onSampleRateChange (double sr)
+{
+	sampleRate = sr;
+}
+
+//------------------------------------------------------------------------
+tresult PLUGIN_API LivecutController::notify (Vst::IMessage* message)
+{
+	auto msgID = message->getMessageID ();
+	if (!msgID)
+		return kResultFalse;
+	if (std::string_view (msgID) == "ProcessSetup")
+	{
+		if (auto attrs = message->getAttributes ())
+		{
+			double sr;
+			if (attrs->getFloat ("SampleRate", sr) == kResultTrue)
+			{
+				onSampleRateChange (sr);
+			}
+		}
+		return kResultTrue;
+	}
+	return kResultFalse;
 }
 
 //------------------------------------------------------------------------

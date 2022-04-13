@@ -42,6 +42,30 @@ Parameter::Parameter (ParamID pid, const ParamDesc& desc, int32_t flags) : desc 
 }
 
 //------------------------------------------------------------------------
+void Parameter::setCustomToPlainFunc (const ToPlainFunc& func)
+{
+	toPlainFunc = func;
+}
+
+//------------------------------------------------------------------------
+void Parameter::setCustomToNormalizedFunc (const ToNormalizedFunc& func)
+{
+	toNormalizedFunc = func;
+}
+
+//------------------------------------------------------------------------
+void Parameter::setCustomToStringFunc (const ToStringFunc& func)
+{
+	toStringFunc = func;
+}
+
+//------------------------------------------------------------------------
+void Parameter::setCustomFromStringFunc (const FromStringFunc& func)
+{
+	fromStringFunc = func;
+}
+
+//------------------------------------------------------------------------
 auto Parameter::addListener (const ValueChangedFunc& func) -> Token
 {
 	auto token = ++tokenCounter;
@@ -71,20 +95,31 @@ bool Parameter::setNormalized (ParamValue v)
 //------------------------------------------------------------------------
 void Parameter::toString (ParamValue valueNormalized, String128 string) const
 {
-	auto plain = toPlain (valueNormalized);
-	if (auto stepCount = std::get_if<StepCount> (&desc.rangeOrStepCount); desc.stringList)
-		tstrcpy (string, reinterpret_cast<const tchar*> (desc.stringList[static_cast<size_t> (plain - stepCount->startValue)]));
+	if (toStringFunc)
+	{
+		toStringFunc (*this, valueNormalized, string);
+	}
 	else
 	{
-		UString wrapper (string, str16BufferSize (String128));
-		if (!wrapper.printFloat (plain, precision))
-			string[0] = 0;
+		auto plain = toPlain (valueNormalized);
+		if (auto stepCount = std::get_if<StepCount> (&desc.rangeOrStepCount); desc.stringList)
+			tstrcpy (string,
+			         reinterpret_cast<const tchar*> (
+			             desc.stringList[static_cast<size_t> (plain - stepCount->startValue)]));
+		else
+		{
+			UString wrapper (string, str16BufferSize (String128));
+			if (!wrapper.printFloat (plain, precision))
+				string[0] = 0;
+		}
 	}
 }
 
 //------------------------------------------------------------------------
 bool Parameter::fromString (const TChar* string, ParamValue& valueNormalized) const
 {
+	if (fromStringFunc)
+		return fromStringFunc (*this, string, valueNormalized);
 	if (desc.stringList)
 	{
 		for (auto index = 0; index < std::get<StepCount> (desc.rangeOrStepCount).value; ++index)
@@ -109,6 +144,8 @@ bool Parameter::fromString (const TChar* string, ParamValue& valueNormalized) co
 //------------------------------------------------------------------------
 auto Parameter::toPlain (ParamValue valueNormalized) const -> ParamValue
 {
+	if (toPlainFunc)
+		return toPlainFunc (*this, valueNormalized);
 	if (auto stepCount = std::get_if<StepCount> (&desc.rangeOrStepCount))
 	{
 		return normalizedToSteps (stepCount->value, stepCount->startValue, valueNormalized);
@@ -120,6 +157,8 @@ auto Parameter::toPlain (ParamValue valueNormalized) const -> ParamValue
 //------------------------------------------------------------------------
 auto Parameter::toNormalized (ParamValue plainValue) const -> ParamValue
 {
+	if (toNormalizedFunc)
+		return toNormalizedFunc (*this, plainValue);
 	if (auto stepCount = std::get_if<StepCount> (&desc.rangeOrStepCount))
 	{
 		return stepsToNormalized (stepCount->value, stepCount->startValue, plainValue);

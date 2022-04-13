@@ -252,6 +252,15 @@ tresult PLUGIN_API LivecutProcessor::setupProcessing (Vst::ProcessSetup& newSetu
 	kernel.setSampleRate (newSetup.sampleRate);
 	cutCountUpdater->init (newSetup.sampleRate, 30);
 	blockCountUpdater->init (newSetup.sampleRate, 30);
+	if (auto msg = owned (allocateMessage ()))
+	{
+		msg->setMessageID ("ProcessSetup");
+		if (auto attr = msg->getAttributes ())
+		{
+			attr->setFloat ("SampleRate", newSetup.sampleRate);
+			sendMessage (msg);
+		}
+	}
 	return AudioEffect::setupProcessing (newSetup);
 }
 
