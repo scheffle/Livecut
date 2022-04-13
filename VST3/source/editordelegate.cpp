@@ -70,15 +70,41 @@ private:
 //------------------------------------------------------------------------
 void LivecutController::EditorDelegate::init ()
 {
-	if (auto param = parameters.getParameterByIndex (paramID (ParameterID::CutCount)))
+	if (auto param = getParameterByIndex (paramID (ParameterID::CutCount)))
 	{
-		static_cast<Parameter*> (param)->addListener (
-		    [this] (auto, auto value) { startNewBoxAnimations (value * 1000); });
+		param->addListener ([this] (auto, auto value) { startNewBoxAnimations (value * 1000); });
 	}
-	if (auto param = parameters.getParameterByIndex (paramID (ParameterID::BlockCount)))
+	if (auto param = getParameterByIndex (paramID (ParameterID::BlockCount)))
 	{
-		static_cast<Parameter*> (param)->addListener (
-		    [this] (auto, auto value) { startNewBoxAnimations (value * 1000); });
+		param->addListener ([this] (auto, auto value) { startNewBoxAnimations (value * 1000); });
+	}
+	if (auto param = getParameterByIndex (paramID (ParameterID::CutProc)))
+	{
+		param->addListener (
+		    [this] (const auto& param, auto value) { onCutProcChanged (param, value); });
+	}
+	std::fill (cutProcContainers.begin (), cutProcContainers.end (), nullptr);
+}
+
+//------------------------------------------------------------------------
+Parameter* LivecutController::EditorDelegate::getParameterByIndex (uint32_t index) const
+{
+	return static_cast<Parameter*> (parameters.getParameterByIndex (index));
+}
+
+//------------------------------------------------------------------------
+void LivecutController::EditorDelegate::onCutProcChanged (const Parameter& param, double newValue)
+{
+	auto index = static_cast<uint32_t> (param.toPlain (newValue));
+	for (auto i = 0u; i < cutProcContainers.size (); ++i)
+	{
+		if (cutProcContainers[i])
+		{
+			cutProcContainers[i]->addAnimation (
+			    "AlphaValueAnimation", new Animation::AlphaValueAnimation (index == i ? 1.f : 0.5f),
+			    new Animation::CubicBezierTimingFunction (
+			        Animation::CubicBezierTimingFunction::easyInOut (250)));
+		}
 	}
 }
 
@@ -87,6 +113,8 @@ void LivecutController::EditorDelegate::didOpen (VST3Editor* editor)
 {
 	editor->setAllowedZoomFactors (zoomFactors);
 	editor->setZoomFactor (editorZoom);
+	if (auto param = getParameterByIndex (paramID (ParameterID::CutProc)))
+		onCutProcChanged (*param, param->getNormalized ());
 }
 
 //------------------------------------------------------------------------
@@ -159,6 +187,21 @@ auto LivecutController::EditorDelegate::verifyView (CView* view, const UIAttribu
 				box->setColor (backcolor);
 			}
 		}
+		else if (*customViewName == "CutProc11Container")
+		{
+			cutProcContainers[0] = view;
+			view->registerViewListener (this);
+		}
+		else if (*customViewName == "WarpCutContainer")
+		{
+			cutProcContainers[1] = view;
+			view->registerViewListener (this);
+		}
+		else if (*customViewName == "SqPusherContainer")
+		{
+			cutProcContainers[2] = view;
+			view->registerViewListener (this);
+		}
 	}
 	return view;
 }
@@ -170,6 +213,9 @@ void LivecutController::EditorDelegate::viewWillDelete (CView* view)
 	auto it = std::find (cutVisualBoxes.begin (), cutVisualBoxes.end (), view);
 	if (it != cutVisualBoxes.end ())
 		cutVisualBoxes.erase (it);
+	auto it2 = std::find (cutProcContainers.begin (), cutProcContainers.end (), view);
+	if (it2 != cutProcContainers.end ())
+		*it2 = nullptr;
 }
 
 //------------------------------------------------------------------------

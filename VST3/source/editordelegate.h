@@ -24,9 +24,10 @@
 
 #ifdef LIVECUT_VSTGUI_SUPPORT
 #include "vstgui4/vstgui/plugin-bindings/vst3editor.h"
-#endif
-
+#include "parameter.h"
 #include <random>
+#include <array>
+#endif
 
 //------------------------------------------------------------------------
 namespace Livecut {
@@ -48,6 +49,8 @@ struct LivecutController::EditorDelegate
 	EditorDelegate (Steinberg::Vst::ParameterContainer& p) : parameters (p) { init (); }
 
 	void init ();
+	Parameter* getParameterByIndex (uint32_t index) const;
+
 	void didOpen (VST3Editor* editor) override;
 	void onZoomChanged (VST3Editor* editor, double newZoom) override;
 	CView* createCustomView (UTF8StringPtr name, const UIAttributes& attributes,
@@ -58,10 +61,15 @@ struct LivecutController::EditorDelegate
 
 	void startNewBoxAnimations (uint32_t numAnim);
 	void updateBoxIterator ();
+	
+	void onCutProcChanged (const Parameter& param, double newValue);
 
 	using ControlVector = std::vector<VSTGUI::CView*>;
 	ControlVector cutVisualBoxes;
 	ControlVector::iterator cutVisBoxIt {cutVisualBoxes.end ()};
+
+	using CutProcContainerVector = std::array<VSTGUI::CView*, 3>;
+	CutProcContainerVector cutProcContainers;
 
 	std::random_device rd;
 	std::mt19937 randGen {rd ()};
