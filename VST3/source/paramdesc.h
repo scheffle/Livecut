@@ -48,7 +48,7 @@ struct ParamDesc
 	const char16_t* name {nullptr};
 	const double defaultNormalized {0.};
 	const Norm2ProcNativeFunc toNative = [] (double v) { return v; };
-	const std::variant<StepCount, Range> rangeOrStepCount;
+	const std::variant<StepCount, Range> rangeOrStepCount {Range {}};
 	const char16_t* const* stringList {nullptr};
 };
 
