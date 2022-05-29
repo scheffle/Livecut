@@ -5,7 +5,7 @@ if(NOT vst3sdk_SOURCE_DIR)
     message(FATAL_ERROR "Path to VST3 SDK is empty!")
 endif()
 
-project(Livecut)
+project(Livecut VERSION 1.0.0)
 
 option(SMTG_ADD_VSTGUI ON)
 
