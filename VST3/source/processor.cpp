@@ -190,10 +190,10 @@ tresult PLUGIN_API LivecutProcessor::process (Vst::ProcessData& data)
 	Kernel::StereoBuffer inputs;
 	Kernel::StereoBuffer outputs;
 
-	auto ins = data.inputs[0];
+	auto& ins = data.inputs[0];
 	inputs[0] = ins.channelBuffers32[0];
 	inputs[1] = ins.channelBuffers32[1];
-	auto outs = data.outputs[0];
+	auto& outs = data.outputs[0];
 	outputs[0] = outs.channelBuffers32[0];
 	outputs[1] = outs.channelBuffers32[1];
 
