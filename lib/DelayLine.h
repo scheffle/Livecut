@@ -25,9 +25,9 @@
 //-------------------------------------------------------
 inline float linear_interpolation(const float* data, unsigned long mask, float pos)
 {
-	int ipos = lrintf(pos);
+	auto ipos = lrintf(pos);
 	float frac = float(pos-ipos);
-  return (1.0f-frac)*data[ipos&mask] + frac*data[(ipos+1)&mask];
+	return (1.0f-frac)*data[ipos&mask] + frac*data[(ipos+1)&mask];
 }
 
 //-------------------------------------------------------

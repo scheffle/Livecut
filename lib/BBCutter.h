@@ -39,7 +39,7 @@ struct Math
     return min + (max-min)*double(rand())/double(RAND_MAX);
   }
   
-  static inline void randomseed(long seed)
+  static inline void randomseed(unsigned int seed)
   {
     srand(seed);
   }

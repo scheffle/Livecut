@@ -249,7 +249,7 @@ void LivecutController::EditorDelegate::updateBoxIterator ()
 	using namespace VSTGUI;
 	using namespace VSTGUI::Animation;
 
-	std::uniform_int_distribution<> randomDist (0u, cutVisualBoxes.size () - 1);
+	std::uniform_int_distribution<size_t> randomDist (0u, cutVisualBoxes.size () - 1);
 
 	for (auto i = 0u; i < 5u; ++i)
 	{

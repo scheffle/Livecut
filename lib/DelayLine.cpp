@@ -65,8 +65,8 @@ void DelayLine::set_delay(float delay)
 
 void DelayLine::replace(const float x[],int pos,int size)
 {
-  int p = (mWriteIndex+pos); p &= mMask;
-  int n = mSize-p;
+  auto p = (mWriteIndex+pos); p &= mMask;
+  auto n = mSize-p;
   if(n>size)
     n = size ;
   else
@@ -87,8 +87,8 @@ void DelayLine::replace(const float x[],int pos,int size)
 
 void DelayLine::write(const float x[],int pos,int size)
 {
-  int p = (mWriteIndex+pos); p &= mMask;
-  int n = mSize-p;
+  auto p = (mWriteIndex+pos); p &= mMask;
+  auto n = mSize-p;
   if(n>size)
     n = size ;
   else
@@ -110,9 +110,9 @@ void DelayLine::write(const float x[],int pos,int size)
 
 void DelayLine::read(float dest[],int pos,int size)
 {
-  int p = (mWriteIndex+(pos+mSize));
+  auto p = (mWriteIndex+(pos+mSize));
   p    &= mMask;
-  int n = mSize-p;
+  auto n = mSize-p;
   
   if(size<n)
   {
