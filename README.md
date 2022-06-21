@@ -16,7 +16,7 @@ The original VST plug-in was written by Remy Muller.
 ```
 mkdir build
 cd build
-cmake -Dvst3sdk_SOURCE_DIR=$PATH_TO_THE_VST3_SDK ../VST3/
+cmake -DCMAKE_BUILD_TYPE=RELEASE -Dvst3sdk_SOURCE_DIR=$PATH_TO_THE_VST3_SDK ../VST3/
 cmake --build .
 ```
 
