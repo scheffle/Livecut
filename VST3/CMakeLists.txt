@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14.0)
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.14 CACHE STRING "")
+
 set(vst3sdk_SOURCE_DIR CACHE PATH ../../vst3sdk)
 if(NOT vst3sdk_SOURCE_DIR)
     message(FATAL_ERROR "Path to VST3 SDK is empty!")
@@ -7,7 +9,7 @@ endif()
 
 project(Livecut VERSION 1.0.0)
 
-option(SMTG_ADD_VSTGUI ON)
+set(SMTG_ADD_VSTGUI ON)
 
 set(SMTG_VSTGUI_ROOT "${vst3sdk_SOURCE_DIR}")
 
