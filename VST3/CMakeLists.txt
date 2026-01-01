@@ -12,6 +12,8 @@ project(Livecut VERSION 1.0.0)
 set(SMTG_ADD_VSTGUI ON)
 
 set(SMTG_VSTGUI_ROOT "${vst3sdk_SOURCE_DIR}")
+set(SMTG_ENABLE_VST3_HOSTING_EXAMPLES 0)
+set(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES 0)
 
 add_subdirectory(${vst3sdk_SOURCE_DIR} ${PROJECT_BINARY_DIR}/vst3sdk)
 smtg_enable_vst3_sdk()
