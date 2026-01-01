@@ -577,8 +577,6 @@ void LivePlayer::OnBlock(std::vector<CutInfo> newcuts)
 #include <functional>
 #include <cassert>
 using std::for_each;
-using std::mem_fun;
-using std::bind2nd;
 
 BBCutter::BBCutter(LivePlayer &player)
 : player(player)
@@ -637,16 +635,16 @@ void	BBCutter::SetRitardChance(float chance)   { warpcutproc.SetRitardChance(cha
 void	BBCutter::SetAccel(float v)               { warpcutproc.SetAccel(v);}
 void	BBCutter::SetActivity(float v)            { sqpusher.SetActivity(v);}
 void	BBCutter::SetFade(float v)                { player.SetFade( ms2samples(v,sr) );}
-void	BBCutter::SetMinPhraseLength(long v) { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMinPhraseLength),v));}
-void	BBCutter::SetMaxPhraseLength(long v) { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMaxPhraseLength),v));}
-void	BBCutter::SetMinAmp(float v)      { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMinAmp),v));}
-void	BBCutter::SetMaxAmp(float v)      { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMaxAmp),v));}
-void	BBCutter::SetMinPan(float v)      { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMinPan),v));}
-void	BBCutter::SetMaxPan(float v)      { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMaxPan),v));}
-void	BBCutter::SetDutyCycle(float v)   { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetDutyCycle),v));}
-void	BBCutter::SetFillDutyCycle(float v) { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetFillDutyCycle),v));}
-void	BBCutter::SetMinDetune(float v)   { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMinDetune),v));}
-void	BBCutter::SetMaxDetune(float v)   { for_each(procs.begin(),procs.end(),bind2nd(mem_fun(&CutProc::SetMaxDetune),v));}
+void	BBCutter::SetMinPhraseLength(long v) { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMinPhraseLength(v);});}
+void	BBCutter::SetMaxPhraseLength(long v) { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMaxPhraseLength(v);});}
+void	BBCutter::SetMinAmp(float v)      { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMinAmp(v);});}
+void	BBCutter::SetMaxAmp(float v)      { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMaxAmp(v);});}
+void	BBCutter::SetMinPan(float v)      { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMinPan(v);});}
+void	BBCutter::SetMaxPan(float v)      { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMaxPan(v);});}
+void	BBCutter::SetDutyCycle(float v)   { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetDutyCycle(v);});}
+void	BBCutter::SetFillDutyCycle(float v) { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetFillDutyCycle(v);});}
+void	BBCutter::SetMinDetune(float v)   { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMinDetune(v);});}
+void	BBCutter::SetMaxDetune(float v)   { for_each(procs.begin(),procs.end(),[&] (auto& proc) {proc->SetMaxDetune(v);});}
 void	BBCutter::SetNumerator(double v)  { numerator   = v; beatsPerBar=4.0*numerator/denominator; UpdateRates();}
 void	BBCutter::SetDenominator(double v) { denominator = v; beatsPerBar=4.0*numerator/denominator; UpdateRates();}
 
